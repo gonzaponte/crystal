@@ -17,3 +17,5 @@ G4History.macro
 **/Testing
 *.parquet
 !data/*.parquet
+__pycache__
+.ipynb_checkpoints
