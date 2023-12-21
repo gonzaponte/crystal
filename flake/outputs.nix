@@ -6,7 +6,7 @@
 }: let
   inherit (nixpkgs.legacyPackages) pkgs;
   pkgs-new = newpkgs.legacyPackages.pkgs;
-  inherit (import ./helpers.nix { inherit nain4 pkgs self; }) shell-shared;
+  inherit (import ./helpers.nix { inherit nain4 pkgs pkgs-new self; }) shell-shared;
   inherit (nain4.deps) args-from-cli make-app;
   in {
 
@@ -43,8 +43,8 @@
     # Activated by `nix develop <URL to this flake>#clang`
     devShells.clang = pkgs.mkShell.override { stdenv = nain4.packages.clang_16.stdenv; } (shell-shared // {
       name = "crystal-clang-devenv";
-      packages = nain4.deps.dev-shell-packages ++ [
-        nain4.packages.clang_16 pkgs.arrow-cpp pkgs.gdb
+      packages = [
+        pkgs-new.qt5.wrapQtAppsHook
         (pkgs-new.python3.withPackages(ps: with ps; [parquet pandas ipython pyarrow polars jupyter matplotlib numpy scipy]))
       ];
     });

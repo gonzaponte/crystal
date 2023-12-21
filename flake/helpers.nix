@@ -1,8 +1,8 @@
-{ pkgs, nain4, self }:
+{ pkgs, pkgs-new, nain4, self }:
 
 {
    shell-shared = {
-    G4_DIR = "${pkgs.geant4}";
+    QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs-new.libsForQt5.qt5.qtbase.bin}/lib/qt-${pkgs-new.libsForQt5.qt5.qtbase.version}/plugins";
 
       shellHook = ''
         export CRYSTAL_LIB=$PWD/install/crystal/lib
