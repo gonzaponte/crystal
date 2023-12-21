@@ -45,7 +45,7 @@
       name = "crystal-clang-devenv";
       packages = [
         pkgs-new.qt5.wrapQtAppsHook
-        (pkgs-new.python3.withPackages(ps: with ps; [parquet pandas ipython pyarrow polars jupyter matplotlib numpy scipy]))
+        (pkgs-new.python3.withPackages(ps: with ps; [parquet pytorch pandas ipython pyarrow polars jupyter matplotlib numpy scipy]))
       ];
     });
 
