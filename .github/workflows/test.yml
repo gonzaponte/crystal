@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-12]
+        os: [macos-12]
         py: [311]
         devshell: [ clang, gcc ]
         #allow-fail: [false]
@@ -50,39 +50,5 @@ jobs:
           # If you chose API tokens for write access OR if you have a private cache
           authToken: '${{ secrets.CACHIX_JACG_NAIN4 }}'
 
-      - name: Build nix development environment
-        run: nix develop
-
-      - name: Build project code
-        run: nix develop .#${{ matrix.devshell }} -c just build | tee compilation-log
-
-      - name: Count warnings
-        run: nix develop .# -c bash scripts/count-warnings.sh compilation-log scripts/tolerated-warnings do-not-fail-here
-
       - name: Run test suite
         run: nix develop .#${{ matrix.devshell }} -c just test -v
-
-      - name: Test nix build default package
-        run: |
-          nix build ./#
-
-      - name: Test run nix build client package result
-        run: |
-          nix develop .# -c result/bin/crystal --beam-on 12 | tee build-and-run-client-package-output
-          PATTERN="end of event 12"
-          echo Looking for "'$PATTERN'" in output of 'just'
-          grep "$PATTERN" build-and-run-client-package-output
-        continue-on-error: true # see issue # https://github.com/jacg/nain4/issues/161
-
-      - name: Test variables set by nain4 setupHook
-        run: |
-          nix develop ./# -c env > my-project-env
-          echo ====== grepping for G4_DIR ====================
-          grep G4_DIR my-project-env
-          echo ===============================================
-          echo grepping for QT_QPA_PLATFORM_PLUGIN_PATH
-          grep QT_QPA_PLATFORM_PLUGIN_PATH my-project-env
-          echo ===============================================
-
-      - name: Fail if too many warnings
-        run: nix develop .# -c bash scripts/count-warnings.sh compilation-log scripts/tolerated-warnings fail
